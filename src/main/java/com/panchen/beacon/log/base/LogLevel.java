@@ -23,9 +23,15 @@ public enum LogLevel {
         return level.getValue();
     }
 
+    public static String ofName(LogLevel level) {
+        return level.getName();
+    }
+
     public int getValue() {
         return value;
     }
 
-
+    public String getName() {
+        return name;
+    }
 }

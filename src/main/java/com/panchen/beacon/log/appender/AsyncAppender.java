@@ -1,5 +1,7 @@
 package com.panchen.beacon.log.appender;
 
-public class AsyncAppender implements Appender{
+public interface AsyncAppender extends Appender {
+
+    public void init();
 
 }
