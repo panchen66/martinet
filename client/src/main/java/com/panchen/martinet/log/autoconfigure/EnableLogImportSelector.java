@@ -1,9 +1,10 @@
-package com.panchen.beacon.log.autoconfigure;
+package com.panchen.collector.log.autoconfigure;
 
 import org.springframework.context.annotation.ImportSelector;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.MultiValueMap;
-import com.panchen.beacon.log.base.Context;
+
+import com.panchen.collector.log.base.Context;
 
 public class EnableLogImportSelector implements ImportSelector {
 

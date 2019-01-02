@@ -1,7 +1,8 @@
-package com.panchen.beacon.log.base;
+package com.panchen.collector.log.base;
 
 import java.util.concurrent.CopyOnWriteArrayList;
-import com.panchen.beacon.log.appender.Appender;
+
+import com.panchen.collector.log.appender.Appender;
 
 public class Logger {
 

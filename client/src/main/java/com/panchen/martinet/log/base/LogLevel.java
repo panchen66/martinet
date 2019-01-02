@@ -1,4 +1,4 @@
-package com.panchen.beacon.log.base;
+package com.panchen.collector.log.base;
 
 public enum LogLevel {
 

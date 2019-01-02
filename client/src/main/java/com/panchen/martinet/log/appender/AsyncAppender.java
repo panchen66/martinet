@@ -1,4 +1,4 @@
-package com.panchen.beacon.log.appender;
+package com.panchen.collector.log.appender;
 
 public interface AsyncAppender extends Appender {
 

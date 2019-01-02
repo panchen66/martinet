@@ -1,6 +1,6 @@
-package com.panchen.beacon.log.convert;
+package com.panchen.collector.log.convert;
 
-import com.panchen.beacon.log.base.LogMetadata;
+import com.panchen.collector.log.base.LogMetadata;
 
 public class StringConverter implements Converter {
 

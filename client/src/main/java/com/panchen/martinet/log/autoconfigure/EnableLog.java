@@ -1,4 +1,4 @@
-package com.panchen.beacon.log.autoconfigure;
+package com.panchen.collector.log.autoconfigure;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -16,9 +16,5 @@ import org.springframework.context.annotation.Import;
 public @interface EnableLog {
 
     String logFileUrl() default "";
-
-    boolean streamAppender() default true;
-    
-    boolean fileAppender() default true;
 
 }

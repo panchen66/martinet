@@ -1,6 +1,6 @@
-package com.panchen.beacon.log.appender;
+package com.panchen.collector.log.appender;
 
-import com.panchen.beacon.log.base.LogMetadata;
+import com.panchen.collector.log.base.LogMetadata;
 
 public interface Appender {
 

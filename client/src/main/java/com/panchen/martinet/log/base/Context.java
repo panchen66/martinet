@@ -1,10 +1,10 @@
-package com.panchen.beacon.log.base;
+package com.panchen.collector.log.base;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import com.panchen.beacon.log.convert.Converter;
+import com.panchen.collector.log.convert.Converter;
 
 public class Context {
 

@@ -1,9 +1,10 @@
-package com.panchen.beacon.log.base;
+package com.panchen.collector.log.base;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
-import com.panchen.beacon.log.convert.Converter;
+
+import com.panchen.collector.log.convert.Converter;
 
 
 /**
