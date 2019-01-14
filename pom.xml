@@ -1,17 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.panchen</groupId>
-	<artifactId>collector</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>martinet-parent</artifactId>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
-	
+
 	<modules>
-		<module>parent</module>
-		<module>client</module>
+		<module>plugin</module>
 		<module>server</module>
-		<module>ui</module>
+		<module>dashboard</module>
+		<module>common</module>
+		<module>test</module>
+		<module>martinet-plugin2</module>
 	</modules>
 
+
+	<properties>
+		<netty-all.version>4.1.32.Final</netty-all.version>
+		<junit.version>4.12</junit.version>
+		<martinet.version>1.0.0</martinet.version>
+		<spring-context.version>5.0.5.RELEASE</spring-context.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.netty</groupId>
+				<artifactId>netty-all</artifactId>
+				<version>${netty-all.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.panchen</groupId>
+				<artifactId>martinet-parent</artifactId>
+				<version>${martinet.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.panchen</groupId>
+				<artifactId>martinet-common</artifactId>
+				<version>${martinet.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.panchen</groupId>
+				<artifactId>martinet-plugin</artifactId>
+				<version>${martinet.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.panchen</groupId>
+				<artifactId>martinet-server</artifactId>
+				<version>${martinet.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring-context.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
