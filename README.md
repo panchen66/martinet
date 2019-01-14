@@ -1,3 +1,3 @@
 #MARTINET
 
-#致力于实时日志流处理
+#Be a serious person , Clean your logs ！
