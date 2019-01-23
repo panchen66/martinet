@@ -1,4 +1,4 @@
-package com.panchen.martinet.server.transport;
+package com.panchen.martinet.common.transport;
 
 import java.net.InetSocketAddress;
 import io.netty.bootstrap.ServerBootstrap;
@@ -9,9 +9,8 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.concurrent.Future;
 
-public class NettyTransport implements Transport {
+public class NettyTransport implements Transprot {
 
 
     private int acceptorCount;

@@ -1,4 +1,4 @@
-package com.panchen.martinet.plugin.collect.transport;
+package com.panchen.martinet.common.transport;
 
 import java.nio.charset.Charset;
 

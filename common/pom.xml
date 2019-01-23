@@ -12,4 +12,10 @@
 		<version>1.0.0</version>
 	</parent>
 
+	<dependencies>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+		</dependency>
+	</dependencies>
 </project>

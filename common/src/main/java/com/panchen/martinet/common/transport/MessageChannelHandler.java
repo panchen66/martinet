@@ -1,4 +1,4 @@
-package com.panchen.martinet.server.transport;
+package com.panchen.martinet.common.transport;
 
 import java.net.InetSocketAddress;
 import io.netty.buffer.ByteBuf;
