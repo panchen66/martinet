@@ -1,102 +1,39 @@
 package com.panchen.martinet.common.transport;
 
 import java.net.InetSocketAddress;
+import java.util.List;
+
+import com.panchen.martinet.common.lifecycle.LifecycleBase;
+import com.panchen.martinet.common.lifecycle.LifecycleListener;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-public class NettyTransport implements Transprot {
+public abstract class NettyTransport extends LifecycleBase implements LifecycleListener, Transprot {
 
+    // for stats
+    protected volatile boolean running = false;
+    protected List<TransportListener> listeners;
 
-    private int acceptorCount;
+    protected abstract void registListener(List<TransportListener> listeners);
 
-    private int tcpPort;
+    protected abstract ChannelHandler getChannelInitializer();
 
-
-    public boolean start() {
-        createClusterBootstrap();
-       // createServerBootstrap();
-        return false;
-
+    protected Channel bind(ServerBootstrap sb, InetSocketAddress address) {
+        return sb.bind(address).syncUninterruptibly().channel();
     }
 
-    // netty sbs for cluster transport
-    @SuppressWarnings("unchecked")
-    private void createClusterBootstrap() {
-        ServerBootstrap sbs = new ServerBootstrap();
-        sbs.channel(NioServerSocketChannel.class);
-
-        sbs.option(ChannelOption.SO_KEEPALIVE, true);
-        sbs.option(ChannelOption.TCP_NODELAY, true);
-
-        sbs.group(acceptorGroup());
-
-
-        sbs.childHandler(new ServerChannelInitializer());
-
-        sbs.validate();
-
-        //
-        sbs.bind(8888).addListeners(new ClientChannelFutureListener());
-        //sbs.bind(8888);
-        
-    }
-    
-    
-    // netty sbs for client transport
-    private void createServerBootstrap() {
-        ServerBootstrap sbs = new ServerBootstrap();
-        sbs.channel(NioServerSocketChannel.class);
-        sbs.option(ChannelOption.SO_KEEPALIVE, true);
-        sbs.option(ChannelOption.TCP_NODELAY, true);
-        sbs.group(acceptorGroup());
-        sbs.validate();
-    }
-
-
-    private NioEventLoopGroup acceptorGroup() {
+    public NioEventLoopGroup acceptorGroup(int acceptorCount) {
         return new NioEventLoopGroup(acceptorCount);
     }
 
+    public boolean getStats() {
+        return running;
+    }
 
-    public InetSocketAddress tcpPort() {
+    InetSocketAddress tcpPort(int tcpPort) {
         return new InetSocketAddress(tcpPort);
-    }
-
-
-    private class ServerChannelInitializer extends ChannelInitializer<Channel> {
-
-        @Override
-        protected void initChannel(Channel ch) throws Exception {
-            // TODO Auto-generated method stub
-            ch.pipeline().addLast("streamHandler", new MessageChannelHandler());
-        }
-
-    }
-
-
-    private class ClientChannelInitializer extends ChannelInitializer<Channel> {
-
-        @Override
-        protected void initChannel(Channel ch) throws Exception {
-            // TODO Auto-generated method stub
-
-        }
-
-    }
-
-    private class ClientChannelFutureListener implements ChannelFutureListener {
-
-        @Override
-        public void operationComplete(ChannelFuture future) throws Exception {
-            // TODO Auto-generated method stub
-            System.out.print(2);
-        }
-
     }
 }

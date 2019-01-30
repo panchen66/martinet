@@ -1,10 +1,10 @@
 package com.panchen.martinet.client.base;
 
-import com.panchen.martinet.common.io.LogByte;
+import com.panchen.martinet.common.io.TransportByte;
 
 public interface Collector {
 
-    void collect(LogByte logByte);
+    void collect(TransportByte transportByte);
 
     void flush();
 

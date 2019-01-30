@@ -1,6 +1,6 @@
 package com.panchen.martinet.common.io;
 
-public class Bytes {
+public interface Bytes {
 
     public static byte[] int2Bytes(int num) {
         byte[] byteNum = new byte[4];

@@ -6,7 +6,6 @@ import com.panchen.martinet.common.io.Bytes;
 
 public abstract class TcpContent {
 
-
     public abstract void writeBody();
 
     public static class TcpHeader {

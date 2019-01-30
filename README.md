@@ -1,3 +1,3 @@
 #MARTINET
 
-#Be a serious person , Clean your logs ！
+#Committed to real-time log flow processing!

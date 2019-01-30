@@ -40,7 +40,7 @@ public abstract class LifecycleBase implements Lifecycle {
             // todo
         }
     }
-
+    
     protected abstract void initInternal();
 
     public synchronized void start() {
