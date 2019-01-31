@@ -6,12 +6,12 @@ import java.util.concurrent.BlockingQueue;
 import com.panchen.martinet.client.transport.NettyClientTransprot;
 import com.panchen.martinet.common.io.TransportByte;
 
-public class DefalutCollector implements Collector {
+public class DefalutCollector extends Collector {
 
     private TransportByte transportByte;
-    private Martinet martinet = Martinet.getApplicationContent();
-    private NettyClientTransprot nettyClientTransprot = (NettyClientTransprot) martinet.getTransprot();
-    private BlockingQueue<TransportByte> queue = new ArrayBlockingQueue<TransportByte>(martinet.getMaxQueueLength());
+    private static MartinetClient martinetClient = MartinetClient.getApplicationContent();
+    private NettyClientTransprot nettyClientTransprot;
+    private BlockingQueue<TransportByte> queue;
 
     @Override
     public void collect(TransportByte transportByte) {
@@ -22,7 +22,7 @@ public class DefalutCollector implements Collector {
     public void flush() {
         transportByte = queue.poll();
         if (null != transportByte) {
-            nettyClientTransprot.send(transportByte);
+            nettyClientTransprot.send(transportByte, nettyClientTransprot.getChannel());
         }
     }
 
@@ -33,6 +33,18 @@ public class DefalutCollector implements Collector {
                 flush();
             }
         }
+    }
+
+    @Override
+    protected void initInternal() {
+        nettyClientTransprot = (NettyClientTransprot) martinetClient.getNettyTransport();
+        queue = new ArrayBlockingQueue<TransportByte>(martinetClient.getMaxQueueLength());
+    }
+
+    @Override
+    protected void startInternal() {
+        flusher flusher = new flusher();
+        flusher.start();
     }
 
 }

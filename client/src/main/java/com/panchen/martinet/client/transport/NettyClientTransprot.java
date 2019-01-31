@@ -1,13 +1,16 @@
 package com.panchen.martinet.client.transport;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
-import com.panchen.martinet.common.lifecycle.LifecycleEvent;
+import org.springframework.util.StringUtils;
+import com.panchen.martinet.client.base.MartinetClient;
+import com.panchen.martinet.client.transport.ClientHandler;
+import com.panchen.martinet.common.transport.HeartbeatTransportListener;
 import com.panchen.martinet.common.transport.NettyTransport;
 import com.panchen.martinet.common.transport.TransportListener;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
@@ -17,12 +20,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class NettyClientTransprot extends NettyTransport {
-    
-    private Bootstrap b;
 
+    private Bootstrap b;
+    private Channel channel;
+    private MartinetClient martinetClient = MartinetClient.getApplicationContent();
 
     public ChannelHandler getChannelInitializer() {
-        return new ClientChannelInitializer();
+        return new ClientChannelInitializer(listeners.get(martinetClient.getPort()));
     }
 
     private void createClientBootstrap(InetSocketAddress InetSocketAddress, int maxThreadSize) throws InterruptedException {
@@ -36,6 +40,12 @@ public class NettyClientTransprot extends NettyTransport {
 
     protected class ClientChannelInitializer extends ChannelInitializer<Channel> {
 
+        ClientChannelInitializer(List<TransportListener> listeners) {
+            this.listeners = listeners;
+        }
+
+        private List<TransportListener> listeners;
+
         @Override
         protected void initChannel(Channel ch) throws Exception {
             ch.pipeline().addLast("clientHandler", new ClientHandler(listeners));
@@ -47,41 +57,46 @@ public class NettyClientTransprot extends NettyTransport {
         }
     }
 
-    public void start() {
-        ChannelFuture cf;
-        try {
-            cf = b.connect().sync();
-        } catch (InterruptedException e) {
-        }
-    }
 
+    private InetSocketAddress analysisServer() {
+        String[] InetSocketAddressinfos = StringUtils.split(martinetClient.getServer(), ":");
+        InetSocketAddress serverInetSocketAddress =
+                new InetSocketAddress(InetSocketAddressinfos[0], Integer.valueOf(InetSocketAddressinfos[1]));
+        return serverInetSocketAddress;
+    }
 
     @Override
     protected void initInternal() {
-
+        addDefalutListeners();
+        try {
+            createClientBootstrap(analysisServer(), martinetClient.getMaxThreadSize());
+        } catch (InterruptedException e) {
+        }
     }
 
     @Override
     protected void startInternal() {
         try {
-            createClientBootstrap(null, 0);
+            b.bind(martinetClient.getPort());
+            channel = b.connect().sync().channel();
         } catch (InterruptedException e) {
         }
     }
 
-    @Override
-    public void lifecycleEvent(LifecycleEvent event) {
 
+    protected void addDefalutListeners() {
+        List<TransportListener> listeners = new ArrayList<>();
+        // hearbeat
+        listeners.add(new HeartbeatTransportListener());
+        registListener(listeners, martinetClient.getPort());
     }
 
-    @Override
-    protected void registListener(List<TransportListener> listeners) {
-
+    public Channel getChannel() {
+        return channel;
     }
 
-    @Override
-    public void send(Object message) {
-        
+    public void setChannel(Channel channel) {
+        this.channel = channel;
     }
 
 }

@@ -1,11 +1,15 @@
 package com.panchen.martinet.server.transport;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import com.panchen.martinet.common.lifecycle.LifecycleEvent;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import com.panchen.martinet.common.transport.HeartbeatTransportListener;
 import com.panchen.martinet.common.transport.NettyTransport;
 import com.panchen.martinet.common.transport.TransportListener;
+import com.panchen.martinet.server.bootstrap.MartinetServer;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -17,7 +21,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class NettyServerTransport extends NettyTransport {
 
+    MartinetServer martinetServer = MartinetServer.getApplicationContent();
     private ServerBootstrap sbs = new ServerBootstrap();
+    private Channel serverChannel;
+    // cache client info
+    private Map<Date, String> client = new ConcurrentHashMap<>();
 
     // todo:netty sbs for cluster transport
     private void createClusterBootstrap() {}
@@ -27,7 +35,7 @@ public class NettyServerTransport extends NettyTransport {
         sbs.channel(NioServerSocketChannel.class);
         sbs.option(ChannelOption.SO_KEEPALIVE, true);
         sbs.option(ChannelOption.TCP_NODELAY, true);
-        sbs.group(acceptorGroup(2));
+        sbs.group(acceptorGroup(martinetServer.getAcceptorCount()));
         sbs.childHandler(getChannelInitializer());
         sbs.validate();
     }
@@ -37,33 +45,20 @@ public class NettyServerTransport extends NettyTransport {
         return running;
     }
 
-    @Override
-    protected void initInternal() {
-        createServerBootstrap();
-        createClusterBootstrap();
-    }
-
-    protected void startInternal(InetSocketAddress serverAdderss, InetSocketAddress clusterAddress) {
-        try {
-            if (!running) {
-                running = true;
-                startServerBootstrap(serverAdderss);
-                startClusterBootstrap(clusterAddress);
-            }
-        } catch (Exception e) {
-        } finally {
-            running = false;
-        }
-    }
-
     private void startServerBootstrap(InetSocketAddress InetSocketAddress) throws InterruptedException {
-        Channel c = bind(sbs, InetSocketAddress);
-        c.closeFuture().sync();
+        serverChannel = bind(sbs, InetSocketAddress);
+        // serverChannel.closeFuture().sync();
     }
 
     private void startClusterBootstrap(InetSocketAddress InetSocketAddress) throws InterruptedException {}
 
     protected class ServerChannelInitializer extends ChannelInitializer<Channel> {
+
+        ServerChannelInitializer(List<TransportListener> listeners) {
+            this.listeners = listeners;
+        }
+
+        private List<TransportListener> listeners;
 
         @Override
         protected void initChannel(Channel ch) throws Exception {
@@ -78,30 +73,36 @@ public class NettyServerTransport extends NettyTransport {
 
     @Override
     protected ChannelHandler getChannelInitializer() {
-        return new ServerChannelInitializer();
+        return new ServerChannelInitializer(listeners.get(martinetServer.getPort()));
     }
+
+    @Override
+    protected void initInternal() {
+        addDefalutListeners();
+        createServerBootstrap();
+        createClusterBootstrap();
+    }
+
 
     @Override
     protected void startInternal() {
-        // TODO Auto-generated method stub
-        
+        try {
+            if (!running) {
+                running = true;
+                startServerBootstrap(new InetSocketAddress(martinetServer.getPort()));
+            }
+        } catch (Exception e) {
+        } finally {
+            running = false;
+        }
     }
 
     @Override
-    public void lifecycleEvent(LifecycleEvent event) {
-        // TODO Auto-generated method stub
-        
+    protected void addDefalutListeners() {
+        List<TransportListener> listeners = new ArrayList<>();
+        // hearbeat
+        listeners.add(new HeartbeatTransportListener());
+        registListener(listeners, martinetServer.getPort());
     }
 
-    @Override
-    protected void registListener(List<TransportListener> listeners) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void send(Object message) {
-        // TODO Auto-generated method stub
-        
-    }
 }

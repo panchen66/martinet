@@ -6,7 +6,7 @@ public class HeartbeatTransportListener implements TransportListener {
 
     @Override
     public boolean fireAfterTransportEventInvoked(TransportEvent transportEvent) {
-        return true;
+        return false;
     }
 
     @Override

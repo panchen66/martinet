@@ -1,4 +1,4 @@
-package com.panchen.martinet.server.autoconfigure;
+package com.panchen.martinet.client.autoconfigure;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -12,9 +12,13 @@ import org.springframework.context.annotation.Import;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import(EnableLogImportSelector.class)
-public @interface EnableLog {
+@Import(EnableMartinetClientImportSelector.class)
+public @interface EnableMartinetServer {
 
-    String logFileUrl() default "";
+    int port() default 1517;
+
+    int maxThreadSize() default 2;
+
+    String server() default "127.0.0.1:1121";
 
 }

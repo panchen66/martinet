@@ -1,11 +1,12 @@
 package com.panchen.martinet.client.base;
 
 import com.panchen.martinet.common.io.TransportByte;
+import com.panchen.martinet.common.lifecycle.LifecycleBase;
 
-public interface Collector {
+public abstract class Collector extends LifecycleBase{
 
-    void collect(TransportByte transportByte);
+    public abstract void collect(TransportByte transportByte);
 
-    void flush();
+    abstract void flush();
 
 }

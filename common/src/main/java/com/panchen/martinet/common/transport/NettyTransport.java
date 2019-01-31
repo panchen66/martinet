@@ -2,24 +2,28 @@ package com.panchen.martinet.common.transport;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Map;
 
 import com.panchen.martinet.common.lifecycle.LifecycleBase;
-import com.panchen.martinet.common.lifecycle.LifecycleListener;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 
-public abstract class NettyTransport extends LifecycleBase implements LifecycleListener, Transprot {
+public abstract class NettyTransport extends LifecycleBase implements Transprot {
 
     // for stats
     protected volatile boolean running = false;
-    protected List<TransportListener> listeners;
+    // port->listeners
+    protected Map<Integer, List<TransportListener>> listeners;
 
-    protected abstract void registListener(List<TransportListener> listeners);
+    protected void registListener(List<TransportListener> listener, int port) {
+        listeners.put(port, listener);
+    }
 
     protected abstract ChannelHandler getChannelInitializer();
+
+    protected abstract void addDefalutListeners();
 
     protected Channel bind(ServerBootstrap sb, InetSocketAddress address) {
         return sb.bind(address).syncUninterruptibly().channel();
@@ -35,5 +39,10 @@ public abstract class NettyTransport extends LifecycleBase implements LifecycleL
 
     InetSocketAddress tcpPort(int tcpPort) {
         return new InetSocketAddress(tcpPort);
+    }
+
+    public void send(Object message, Object channel) {
+        ((Channel) channel).write(message);
+        ((Channel) channel).flush();
     }
 }

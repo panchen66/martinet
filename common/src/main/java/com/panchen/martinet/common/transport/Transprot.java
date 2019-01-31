@@ -4,6 +4,6 @@ public interface Transprot {
 
     boolean getStats();
 
-    void send(Object message);
-    
+    void send(Object message, Object channel);
+
 }

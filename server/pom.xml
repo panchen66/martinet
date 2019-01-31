@@ -13,11 +13,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>com.panchen</groupId>
 			<artifactId>martinet-common</artifactId>
 		</dependency>
