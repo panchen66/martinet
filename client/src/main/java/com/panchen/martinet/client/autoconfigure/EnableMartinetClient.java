@@ -13,12 +13,12 @@ import org.springframework.context.annotation.Import;
 @Documented
 @Inherited
 @Import(EnableMartinetClientImportSelector.class)
-public @interface EnableMartinetServer {
+public @interface EnableMartinetClient {
 
     int port() default 1517;
 
     int maxThreadSize() default 2;
 
-    String server() default "127.0.0.1:1121";
+    String server() default "127.0.0.1:1901";
 
 }

@@ -3,6 +3,7 @@ package com.panchen.martinet.common.transport;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.panchen.martinet.common.lifecycle.LifecycleBase;
 import io.netty.bootstrap.ServerBootstrap;
@@ -15,7 +16,7 @@ public abstract class NettyTransport extends LifecycleBase implements Transprot 
     // for stats
     protected volatile boolean running = false;
     // port->listeners
-    protected Map<Integer, List<TransportListener>> listeners;
+    protected Map<Integer, List<TransportListener>> listeners = new ConcurrentHashMap<>();
 
     protected void registListener(List<TransportListener> listener, int port) {
         listeners.put(port, listener);

@@ -30,11 +30,12 @@ public class NettyServerTransport extends NettyTransport {
     // todo:netty sbs for cluster transport
     private void createClusterBootstrap() {}
 
+
     // netty sbs for client transport
     private void createServerBootstrap() {
         sbs.channel(NioServerSocketChannel.class);
-        sbs.option(ChannelOption.SO_KEEPALIVE, true);
-        sbs.option(ChannelOption.TCP_NODELAY, true);
+        sbs.childOption(ChannelOption.SO_KEEPALIVE, true);
+        sbs.childOption(ChannelOption.TCP_NODELAY, true);
         sbs.group(acceptorGroup(martinetServer.getAcceptorCount()));
         sbs.childHandler(getChannelInitializer());
         sbs.validate();
@@ -47,7 +48,6 @@ public class NettyServerTransport extends NettyTransport {
 
     private void startServerBootstrap(InetSocketAddress InetSocketAddress) throws InterruptedException {
         serverChannel = bind(sbs, InetSocketAddress);
-        // serverChannel.closeFuture().sync();
     }
 
     private void startClusterBootstrap(InetSocketAddress InetSocketAddress) throws InterruptedException {}

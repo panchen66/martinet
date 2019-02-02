@@ -31,7 +31,19 @@ public abstract class TransportHandler extends SimpleChannelInboundHandler<Objec
             }
         }
     }
-
+    
+    
+    
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("client receive message :" + msg);
+        for (TransportListener listener : listeners) {
+            if (listener.fireAfterTransportEventInvoked(new TransportEvent(msg, ctx))) {
+                break;
+            }
+        }
+    }
+    
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {}
 }

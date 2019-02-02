@@ -10,7 +10,7 @@ public class EnableMartinetClientImportSelector implements ImportSelector {
     @Override
     public String[] selectImports(AnnotationMetadata importingClassMetadata) {
         MultiValueMap<String, Object> attributes =
-                importingClassMetadata.getAllAnnotationAttributes(EnableMartinetServer.class.getName());
+                importingClassMetadata.getAllAnnotationAttributes(EnableMartinetClient.class.getName());
         // start Martinet client
         new MartinetClient().new MartinetClientBuilder().maxQueueLength((int) attributes.get("maxThreadSize").get(0))
                 .port((int) attributes.get("port").get(0)).server((String) attributes.get("server").get(0)).start();

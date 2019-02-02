@@ -40,7 +40,7 @@ public abstract class LifecycleBase implements Lifecycle {
             // todo
         }
     }
-    
+
     protected abstract void initInternal();
 
     public synchronized void start() {
@@ -60,6 +60,11 @@ public abstract class LifecycleBase implements Lifecycle {
     private void switchState(String eventType, Object data) {
         if (null != lifecycleListeners) {
             pushLifecycleEvent(eventType, data);
+        }
+        if (INIT_EVENT.equals(eventType)) {
+            state = INITIALIZED_STATE;
+        } else if (START_EVENT.equals(eventType)) {
+            state = RUNNING_STATE;
         }
     }
 

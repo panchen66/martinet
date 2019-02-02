@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 @Import(EnableMartinetServerImportSelector.class)
 public @interface EnableMartinetServer {
 
-    int port() default 1121;
+    int port() default 1901;
 
     int acceptorCount() default 2;
 

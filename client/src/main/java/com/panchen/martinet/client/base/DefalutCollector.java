@@ -9,9 +9,9 @@ import com.panchen.martinet.common.io.TransportByte;
 public class DefalutCollector extends Collector {
 
     private TransportByte transportByte;
-    private static MartinetClient martinetClient = MartinetClient.getApplicationContent();
     private NettyClientTransprot nettyClientTransprot;
     private BlockingQueue<TransportByte> queue;
+    private MartinetClient martinetClient = MartinetClient.getApplicationContent();
 
     @Override
     public void collect(TransportByte transportByte) {
