@@ -18,15 +18,16 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 public class NettyClientTransprot extends NettyTransport {
 
     private Bootstrap b;
     private Channel channel;
-    private MartinetClient martinetClient = MartinetClient.getApplicationContent();
 
     public ChannelHandler getChannelInitializer() {
-        return new ClientChannelInitializer(listeners.get(martinetClient.getPort()));
+        return new ClientChannelInitializer(listeners.get(MartinetClient.getApplicationContent().getPort()));
     }
 
     private void createClientBootstrap(InetSocketAddress InetSocketAddress, int maxThreadSize) throws InterruptedException {
@@ -59,7 +60,7 @@ public class NettyClientTransprot extends NettyTransport {
 
 
     private InetSocketAddress analysisServer() {
-        String[] InetSocketAddressinfos = StringUtils.split(martinetClient.getServer(), ":");
+        String[] InetSocketAddressinfos = StringUtils.split(MartinetClient.getApplicationContent().getServer(), ":");
         InetSocketAddress serverInetSocketAddress =
                 new InetSocketAddress(InetSocketAddressinfos[0], Integer.valueOf(InetSocketAddressinfos[1]));
         return serverInetSocketAddress;
@@ -69,7 +70,7 @@ public class NettyClientTransprot extends NettyTransport {
     protected void initInternal() {
         addDefalutListeners();
         try {
-            createClientBootstrap(analysisServer(), martinetClient.getMaxThreadSize());
+            createClientBootstrap(analysisServer(), MartinetClient.getApplicationContent().getMaxThreadSize());
         } catch (InterruptedException e) {
         }
     }
@@ -77,7 +78,7 @@ public class NettyClientTransprot extends NettyTransport {
     @Override
     protected void startInternal() {
         try {
-            b.bind(martinetClient.getPort());
+            b.bind(MartinetClient.getApplicationContent().getPort());
             channel = b.connect().sync().channel();
         } catch (InterruptedException e) {
         }
@@ -87,8 +88,8 @@ public class NettyClientTransprot extends NettyTransport {
     protected void addDefalutListeners() {
         List<TransportListener> listeners = new ArrayList<>();
         // hearbeat
-        listeners.add(new HeartbeatTransportListener());
-        registListener(listeners, martinetClient.getPort());
+        listeners.add(new HeartbeatTransportListener(handlerRegistry));
+        registListener(listeners, MartinetClient.getApplicationContent().getPort());
     }
 
     public Channel getChannel() {
@@ -98,5 +99,12 @@ public class NettyClientTransprot extends NettyTransport {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+
+    @Override
+    protected void addDefalutHandlers() {
+        // TODO Auto-generated method stub
+
+    }
+
 
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.panchen.martinet.common.handler.HandlerRegistry;
+import com.panchen.martinet.common.io.TransportMeta;
 import com.panchen.martinet.common.lifecycle.LifecycleBase;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -17,7 +19,8 @@ public abstract class NettyTransport extends LifecycleBase implements Transprot 
     protected volatile boolean running = false;
     // port->listeners
     protected Map<Integer, List<TransportListener>> listeners = new ConcurrentHashMap<>();
-
+    public HandlerRegistry handlerRegistry;
+    
     protected void registListener(List<TransportListener> listener, int port) {
         listeners.put(port, listener);
     }
@@ -25,7 +28,9 @@ public abstract class NettyTransport extends LifecycleBase implements Transprot 
     protected abstract ChannelHandler getChannelInitializer();
 
     protected abstract void addDefalutListeners();
-
+    
+    protected abstract void addDefalutHandlers();
+    
     protected Channel bind(ServerBootstrap sb, InetSocketAddress address) {
         return sb.bind(address).syncUninterruptibly().channel();
     }
@@ -42,8 +47,7 @@ public abstract class NettyTransport extends LifecycleBase implements Transprot 
         return new InetSocketAddress(tcpPort);
     }
 
-    public void send(Object message, Object channel) {
-        ((Channel) channel).write(message);
-        ((Channel) channel).flush();
+    public void send(Object channel, TransportMeta transportMeta) {
+        ((Channel) channel).writeAndFlush(transportMeta.value());
     }
 }

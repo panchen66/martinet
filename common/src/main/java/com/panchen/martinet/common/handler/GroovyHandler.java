@@ -1,6 +1,6 @@
-package com.panchen.martinet.server.handle;
+package com.panchen.martinet.common.handler;
 
-import com.panchen.martinet.common.io.TransportByte;
+import com.panchen.martinet.common.io.TransportMeta;
 
 import groovy.lang.GroovyObject;
 
@@ -12,8 +12,8 @@ public class GroovyHandler extends MartinetHandler {
 
 
     @Override
-    void handler(TransportByte transportByte) {
-        groovyObject.invokeMethod(HANDLER_METHODNAME, transportByte);
+    public void handler(TransportMeta transportMeta) {
+        groovyObject.invokeMethod(HANDLER_METHODNAME, transportMeta);
     }
 
     public GroovyHandler init(GroovyObject groovyObject) {
@@ -22,8 +22,9 @@ public class GroovyHandler extends MartinetHandler {
     }
 
     @Override
-    void setOrder() {
-        this.order = (int) groovyObject.invokeMethod(ORDER_METHODNAME, null);
+    public int order() {
+        return (int) groovyObject.invokeMethod(ORDER_METHODNAME, null);
     }
+
 
 }

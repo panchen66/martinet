@@ -2,9 +2,26 @@ package com.panchen.martinet.common.transport;
 
 import java.util.EventListener;
 
-public interface TransportListener extends EventListener {
+import com.panchen.martinet.common.handler.HandlerRegistry;
+import com.panchen.martinet.common.io.TransportMeta;
 
-    boolean fireAfterTransportEventInvoked(TransportEvent transportEvent);
+/**
+ * 
+ * There are different listeners for different types of messages ,and the interface is not open to
+ * the outside world.
+ * 
+ * @author pc
+ *
+ */
+public abstract class TransportListener implements EventListener {
 
-    Object reply();
+    public static HandlerRegistry handlerRegistry;
+
+    public TransportListener(HandlerRegistry handlerRegistry) {
+        this.handlerRegistry = handlerRegistry;
+    }
+
+    public abstract boolean fireAfterTransportEventInvoked(TransportEvent transportEvent);
+
+    public abstract TransportMeta reply();
 }

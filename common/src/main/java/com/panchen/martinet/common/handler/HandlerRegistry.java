@@ -1,24 +1,18 @@
-package com.panchen.martinet.server.handle;
+package com.panchen.martinet.common.handler;
 
 import java.util.Collection;
 import java.util.TreeMap;
 
 public class HandlerRegistry {
 
-    private static final HandlerRegistry INSTANCE = new HandlerRegistry();
-
-    public static final HandlerRegistry instance() {
-        return INSTANCE;
-    }
-
     private final TreeMap<Integer, MartinetHandler> handlers = new TreeMap<Integer, MartinetHandler>();
 
-    private HandlerRegistry() {}
+    public HandlerRegistry() {}
 
     public void remove(String name) {
         handlers.values().forEach(handler -> {
             if (name.equals(handler.getName())) {
-                handlers.remove(handler.getOrder(), handler);
+                handlers.remove(handler.order(), handler);
             }
         });
     }
@@ -38,14 +32,14 @@ public class HandlerRegistry {
     }
 
     public void put(MartinetHandler handler) {
-        this.handlers.put(handler.getOrder(), handler);
+        this.handlers.put(handler.order(), handler);
     }
 
     public int size() {
         return this.handlers.size();
     }
 
-    public Collection<MartinetHandler> getAllFilters() {
+    public Collection<MartinetHandler> getAllHandles() {
         return this.handlers.values();
     }
 

@@ -8,15 +8,19 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import com.panchen.martinet.client.base.Collector;
 import com.panchen.martinet.client.base.MartinetClient;
-import com.panchen.martinet.common.io.TransportByte;
+import com.panchen.martinet.common.io.TransportMeta;
 
 @Plugin(name = Log2MartinetAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE,
         printObject = true)
 public class Log2MartinetAppender extends AbstractAppender {
 
-    private static Collector collector = MartinetClient.getApplicationContent().getCollector();
+    private Collector collector = MartinetClient.getApplicationContent().getCollector();
 
     public static final String PLUGIN_NAME = "Log2Martinet";
 
@@ -26,7 +30,22 @@ public class Log2MartinetAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        collector.collect(new TransportByte(event.getMessage().getFormattedMessage()));
+        if (null != collector && collector.isLock()) {
+            collector.collect(new TransportMeta(event.getMessage().getFormattedMessage()));
+        }
     }
 
+    @PluginFactory
+    public static Log2MartinetAppender createAppender(@PluginAttribute("name") String name,
+            @PluginElement("Filter") final Filter filter, @PluginElement("Layout") Layout<? extends Serializable> layout,
+            @PluginAttribute("ignoreExceptions") boolean ignoreExceptions) {
+        if (name == null) {
+            LOGGER.error("no name defined in conf.");
+            return null;
+        }
+        if (layout == null) {
+            layout = PatternLayout.createDefaultLayout();
+        }
+        return new Log2MartinetAppender(name, filter, layout);
+    }
 }

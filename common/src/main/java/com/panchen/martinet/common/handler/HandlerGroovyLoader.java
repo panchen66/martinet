@@ -1,4 +1,4 @@
-package com.panchen.martinet.server.handle;
+package com.panchen.martinet.common.handler;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import groovy.lang.GroovyObject;
 public class HandlerGroovyLoader {
 
     private static GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
-    private static HandlerRegistry handlerRegistry = HandlerRegistry.instance();
+    private static HandlerRegistry handlerRegistry = new HandlerRegistry();
 
     public void load(File handlerFile) {
         String key = handlerFile.getName();

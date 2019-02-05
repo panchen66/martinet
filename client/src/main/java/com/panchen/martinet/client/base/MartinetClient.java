@@ -6,7 +6,7 @@ import com.panchen.martinet.common.transport.NettyTransport;
 
 public class MartinetClient extends LifecycleBase {
 
-    private static final MartinetClient singleton = new MartinetClient();
+    private static MartinetClient singleton = new MartinetClient();
 
     // default transprot
     private NettyTransport nettyTransport = new NettyClientTransprot();
@@ -59,8 +59,8 @@ public class MartinetClient extends LifecycleBase {
         }
 
         public void start() {
-            nettyTransport.start();
-            collector.start();
+            martinetClient.nettyTransport.start();
+            martinetClient.collector.start();
         }
     }
 

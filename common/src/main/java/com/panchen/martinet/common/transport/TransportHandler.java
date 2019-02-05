@@ -18,25 +18,11 @@ public abstract class TransportHandler extends SimpleChannelInboundHandler<Objec
     protected void ping(ChannelHandlerContext ctx) {
         ByteBuf encoded = ctx.alloc().buffer(4 * PING_MESSAGE.length());
         encoded.writeBytes(PING_MESSAGE.getBytes());
-        ctx.write(encoded);
-        ctx.flush();
+        ctx.writeAndFlush(encoded);
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("client receive message :" + msg);
-        for (TransportListener listener : listeners) {
-            if (listener.fireAfterTransportEventInvoked(new TransportEvent(msg, ctx))) {
-                break;
-            }
-        }
-    }
-    
-    
-    
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("client receive message :" + msg);
         for (TransportListener listener : listeners) {
             if (listener.fireAfterTransportEventInvoked(new TransportEvent(msg, ctx))) {
                 break;

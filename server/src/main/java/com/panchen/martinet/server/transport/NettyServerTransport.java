@@ -6,10 +6,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+
+import com.panchen.martinet.common.handler.HandlerRegistry;
+import com.panchen.martinet.common.handler.MartinetHandler;
 import com.panchen.martinet.common.transport.HeartbeatTransportListener;
 import com.panchen.martinet.common.transport.NettyTransport;
 import com.panchen.martinet.common.transport.TransportListener;
 import com.panchen.martinet.server.bootstrap.MartinetServer;
+import com.panchen.martinet.server.handle.CoutHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -26,6 +31,7 @@ public class NettyServerTransport extends NettyTransport {
     private Channel serverChannel;
     // cache client info
     private Map<Date, String> client = new ConcurrentHashMap<>();
+    private HandlerRegistry handlerRegistry;
 
     // todo:netty sbs for cluster transport
     private void createClusterBootstrap() {}
@@ -99,10 +105,18 @@ public class NettyServerTransport extends NettyTransport {
 
     @Override
     protected void addDefalutListeners() {
+        addDefalutHandlers();
         List<TransportListener> listeners = new ArrayList<>();
         // hearbeat
-        listeners.add(new HeartbeatTransportListener());
+        listeners.add(new HeartbeatTransportListener(handlerRegistry));
         registListener(listeners, martinetServer.getPort());
     }
+
+    @Override
+    protected void addDefalutHandlers() {
+        // count
+        handlerRegistry.put(new CoutHandler());
+    }
+
 
 }
