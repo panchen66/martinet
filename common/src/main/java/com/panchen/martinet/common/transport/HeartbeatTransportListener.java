@@ -1,7 +1,6 @@
 package com.panchen.martinet.common.transport;
 
 import com.panchen.martinet.common.handler.HandlerRegistry;
-import com.panchen.martinet.common.io.TransportMeta;
 
 public class HeartbeatTransportListener extends TransportListener {
 
@@ -9,16 +8,21 @@ public class HeartbeatTransportListener extends TransportListener {
         super(handlerRegistry);
     }
 
+    private TransportEvent transportEvent;
     protected static final String PING_MESSAGE = "MARTINET";
 
     @Override
     public boolean fireAfterTransportEventInvoked(TransportEvent transportEvent) {
-        return true;
+        if (PING_MESSAGE.equals(transportEvent.value)) {
+            this.transportEvent = transportEvent;
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public TransportMeta reply() {
-        return new TransportMeta(PING_MESSAGE);
+    public void reply() {
+        transportEvent.getCtx().channel().writeAndFlush(transportEvent.getSource());
     }
 
 

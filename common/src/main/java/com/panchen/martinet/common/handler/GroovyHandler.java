@@ -1,6 +1,7 @@
 package com.panchen.martinet.common.handler;
 
 import com.panchen.martinet.common.io.TransportMeta;
+import com.panchen.martinet.common.transport.TransportEvent;
 
 import groovy.lang.GroovyObject;
 
@@ -12,8 +13,8 @@ public class GroovyHandler extends MartinetHandler {
 
 
     @Override
-    public void handler(TransportMeta transportMeta) {
-        groovyObject.invokeMethod(HANDLER_METHODNAME, transportMeta);
+    public void handler(TransportEvent transportEvent) {
+        groovyObject.invokeMethod(HANDLER_METHODNAME, transportEvent);
     }
 
     public GroovyHandler init(GroovyObject groovyObject) {

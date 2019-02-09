@@ -23,5 +23,5 @@ public abstract class TransportListener implements EventListener {
 
     public abstract boolean fireAfterTransportEventInvoked(TransportEvent transportEvent);
 
-    public abstract TransportMeta reply();
+    public abstract void reply();
 }

@@ -25,11 +25,12 @@ public abstract class TransportHandler extends SimpleChannelInboundHandler<Objec
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         for (TransportListener listener : listeners) {
             if (listener.fireAfterTransportEventInvoked(new TransportEvent(msg, ctx))) {
+                listener.reply();
                 break;
             }
         }
     }
-    
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {}
 }

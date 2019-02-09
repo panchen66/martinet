@@ -31,7 +31,13 @@ public class Log2MartinetAppender extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
         if (null != collector && collector.isLock()) {
-            collector.collect(new TransportMeta(event.getMessage().getFormattedMessage()));
+            StringBuilder sb = new StringBuilder();
+            sb.append(event.getLevel().toString());
+            sb.append("/");
+            sb.append(event.getLoggerName());
+            sb.append("/");
+            sb.append(event.getMessage().getFormattedMessage());
+            collector.collect(new TransportMeta(sb.toString()));
         }
     }
 
